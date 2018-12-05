@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>图像文字识别</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-fileinput.css" rel="stylesheet">
+</head>
+<body>
+<div class="container" style="width: 650px">
+    <div class="page-header" style="float: left">
+        <h3>请上传需要识别的图片</h3>
+        <form id="uploadForm" enctype='multipart/form-data'>
+            <div class="form-group">
+                <div class="h4">语言：<input type="radio" value="eng" name="language">英文
+                    <input type="radio" value="chi_sim" name="language">简体中文</div>
+                <div class="fileinput fileinput-new" data-provides="fileinput"  id="exampleInputUpload">
+                    <div class="fileinput-new thumbnail" style="width: 200px;height: auto;max-height:150px;">
+                        <img id='picImg' style="width: 100%;height: auto;max-height: 140px;" src="images/noimage.png" alt="" />
+                    </div>
+                    <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
+                    <div>
+                        <span class="btn btn-primary btn-file">
+                            <span class="fileinput-new">选择文件</span>
+                            <span class="fileinput-exists">换一张</span>
+                            <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png"/>
+                        </span>
+                        <a href="javascript:;" class="btn btn-warning fileinput-exists" data-dismiss="fileinput">移除</a>
+                    </div>
+                </div>
+            </div>
+            <button type="button" id="uploadSubmit" class="btn btn-info">提交</button>
+        </form>
+    </div>
+    <div style="float: right;margin-top: 40px">
+        <h3 id="ts">识别结果</h3>
+        <textarea id="result" cols="50px" rows="10px"></textarea>
+    </div>
+</div>
+
+
+<script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script src="js/bootstrap-fileinput.js"></script>
+<script type="text/javascript">
+    $(function () {
+
+        $('#uploadSubmit').click(function () {
+            var resultContainer=document.getElementById("result");
+            $("#ts").html("正在识别...");
+            resultContainer.value="";
+            var data = new FormData($('#uploadForm')[0]);
+            $.ajax({
+                url: '/identification',
+                type: 'POST',
+                data: data,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    console.log(data);
+                    document.getElementById("ts").innerHTML="识别结果";
+                    resultContainer.value=data;
+                },
+                error: function (data) {
+                    alert("识别失败！")
+                }
+            });
+        });
+
+    })
+</script>
+</body>
+</html>
